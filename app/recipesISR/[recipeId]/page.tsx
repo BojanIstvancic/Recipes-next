@@ -4,6 +4,8 @@ import Link from "next/link";
 import { getRecipes } from "@/lib/recipe";
 import { RecipeType } from "@/types";
 
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   const recipes = await getRecipes();
 

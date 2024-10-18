@@ -1,25 +1,18 @@
+"use client";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { getRecipes } from "@/lib/recipe";
 import { RecipeType } from "@/types";
 
-export async function generateStaticParams() {
-  const recipes = await getRecipes();
+export default function RecipeClient({ recipeId }: { recipeId: string }) {
+  const [recipe, setRecipe] = useState<RecipeType | null>(null);
 
-  return recipes.map((recipe: RecipeType) => ({
-    recipeId: recipe.id.toString(),
-  }));
-}
-
-export default async function Page({
-  params,
-}: {
-  params: { recipeId: string };
-}) {
-  const { recipeId } = params;
-  const response = await fetch(`https://dummyjson.com/recipes/${recipeId}`);
-  const recipe: RecipeType = await response.json();
+  useEffect(() => {
+    fetch(`https://dummyjson.com/recipes/${recipeId}`)
+      .then((response) => response.json())
+      .then((data) => setRecipe(data));
+  }, [recipeId]);
 
   if (!recipe) {
     return <p>No Recipe found!</p>;
